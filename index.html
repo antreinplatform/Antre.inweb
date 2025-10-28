@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Antre.in — Antre Tanpa Ribet</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    /* ===== Warna Branding ===== */
+    :root{
+      --brand-blue: #0075F2;
+      --brand-yellow: #F7F200;
+      --brand-cream: #f8f8f8;
+      --brand-white: #ffffff;
+      --muted: #6c757d;
+      --card-radius: 16px;
+      --dark-text: #212529;
+    }
+
+    /* ===== Tipografi Global ===== */
+    body{
+      font-family: "Helvetica", "Helvetica", Helvetica;
+      margin:0;
+      background: var(--brand-cream);
+      -webkit-font-smoothing:antialiased;
+      color: var(--dark-text);
+    }
+    .brand-title{
+      font-weight:700;
+      font-size:1.25rem;
+      color: var(--brand-blue); /* Diubah untuk header kuning */
+      letter-spacing:0.2px;
+    }
+
+    /* ===== Header Atas ===== */
+    .top-header{
+      background: var(--brand-yellow); /* Warna ditukar */
+      padding: 12px 18px 20px; /* Padding disesuaikan untuk search bar */
+      border-bottom-left-radius:24px;
+      border-bottom-right-radius:24px;
+      color: var(--dark-text); /* Diubah untuk header kuning */
+    }
+     .header-text-highlight {
+        color: var(--brand-blue) !important;
+         text-shadow: 0 0 1px rgba(255,255,255,0.5);
+    }
+    .loyalty-badge{
+      padding: 4px 10px;
+      border-radius:20px;
+      font-weight:700;
+      font-size:0.7rem;
+      display:inline-block;
+      vertical-align: middle;
+      margin-left: 5px;
+      color: var(--dark-text);
+    }
+    .loyalty-badge.silver { background-color: #e0e0e0; }
+    .loyalty-badge.gold { background-color: #ffd700; }
+    .loyalty-badge.platinum { background-color: #e5e4e2; border: 1px solid #c0c0c0; }
+
+    /* Search Bar - Sekarang di dalam header */
+    #searchContainer {
+        margin-top: 1rem; /* Margin ditambahkan untuk spasi di dalam header */
+    }
+    .search-floating{
+      background: var(--brand-white);
+      padding: 6px 12px;
+      border-radius:32px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      display:flex; align-items:center; gap:6px;
+    }
+    .search-floating input{
+      border:0; outline:0; background:transparent;
+    }
+
+    /* Kartu Produk & Restoran */
+    .product-card, .restaurant-card .card{
+      border-radius: 18px;
+      background: var(--brand-white);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      border: none;
+    }
+     .product-card {
+      width: 280px; min-width: 260px;
+      padding:12px; margin-right:14px;
+      position: relative;
+    }
+    .product-card .title{ font-weight:700; color: var(--brand-blue); font-size:1.05rem; }
+    .product-card .price{ font-weight:700; color: var(--dark-text); font-size:1.05rem; }
+    .product-img, .restaurant-card img {
+      width: 100%;
+      height: 180px; /* MODIFIKASI: Menyesuaikan tinggi gambar */
+      object-fit: cover;
+      border-radius: 12px;
+    }
+     .restaurant-card {
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .restaurant-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+    }
+
+    /* Navigasi Bawah */
+    .bottom-nav{
+      position: fixed;
+      bottom: 0; left:0; right:0;
+      background: var(--brand-blue); /* Warna ditukar */
+      display:flex; justify-content:space-around; align-items:center;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
+      z-index:1200;
+      padding-top: 8px;
+      padding-bottom: 4px;
+    }
+    .bottom-nav .nav-item {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: var(--brand-white); /* Diubah untuk footer biru */
+      font-size: 1.5rem;
+      position: relative;
+    }
+    .bottom-nav .nav-item small {
+        font-size: 0.65rem;
+        font-weight: 500;
+    }
+    .bottom-nav .nav-item .badge {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+    }
+    .bottom-nav .nav-item.active-nav {
+      color: var(--brand-yellow); /* Diubah untuk footer biru */
+      font-weight: 700;
+    }
+    
+    /* Modal */
+    #queueModal .modal-content {
+        background-color: var(--brand-blue);
+        color: var(--brand-white);
+        border-radius: 24px;
+        text-align: center;
+    }
+    #queueModal .display-1 {
+        font-size: 6rem;
+        font-weight: 700;
+    }
+    
+    /* Layar Otentikasi */
+    #authScreen .card {
+        background-color: var(--brand-yellow);
+    }
+
+    /* Overlay Loading */
+    #loadingOverlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(255, 255, 255, 0.9); display: none; /* Sembunyi secara default */
+        justify-content: center; align-items: center; z-index: 9999;
+        flex-direction: column; gap: 1rem;
+    }
+    
+    /* Style untuk chat */
+    .chat-bubble {
+        padding: 8px 14px;
+        border-radius: 16px;
+        max-width: 80%;
+        margin-bottom: 8px;
+    }
+    .chat-bubble.user {
+        background-color: var(--brand-yellow);
+        align-self: flex-end;
+    }
+    .chat-bubble.admin {
+        background-color: var(--brand-white);
+        color: var(--dark-text);
+        align-self: flex-start;
+    }
+    #chatMessages {
+        height: 300px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Overlay Loading -->
+  <div id="loadingOverlay">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Memuat...</p>
+  </div>
+
+  <!-- Popup Notifikasi -->
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1300">
+    <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Notifikasi</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="notificationToastBody"></div>
+    </div>
+  </div>
+
+ <!-- ===== LAYAR LOGIN ===== -->
+  <div id="authScreen" class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-5">
+        <div class="card border-0 shadow-sm" style="border-radius: var(--card-radius);">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <img src="logo.png" alt="logo" style="width: 200px; height: 200px; object-fit: contain;" class="mb-2">
+                    <h4 class="mb-0" style="color:var(--brand-blue); font-weight:700;">Selamat Datang di Antre.in</h4>
+                    <p class="text-muted">Antre Tanpa Ribet</p>
+                </div>
+                <div class="mb-3">
+                  <label for="inputPhone" class="form-label">Nomor Telepon</label>
+                  <input type="tel" class="form-control" id="inputPhone" placeholder="Contoh: 08123456789">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="inputPassword" placeholder="123456">
+                </div>
+                <div class="d-grid">
+                     <button class="btn btn-primary" onclick="loginUser()">Masuk</button>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="dashboard" class="d-none">
+    <header class="top-header">
+      <div class="container d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+           <img src="logo.png" alt="logo" style="width: 60px; height: 60px; object-fit: contain;">
+           <div class="brand-title">Antre.in</div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="text-end" style="font-size: 0.8rem; line-height: 1.2;">
+                <div id="hdrUserInfo" class="header-text-highlight">
+                    <span>Poin: <span id="hdrPoints">0</span></span> | 
+                    <span>Wallet: Rp<span id="hdrWallet">0</span></span>
+                </div>
+                <div><strong id="hdrName" class="header-text-highlight"></strong> <span id="hdrLoyalty" class="loyalty-badge"></span></div>
+            </div>
+            <img id="hdrAvatar" src="https://placehold.co/96x96/f8efed/003ca6?text=U" alt="avatar" width="48" height="48" class="rounded-circle" style="object-fit:cover;">
+          </div>
+      </div>
+      <!-- Search Bar sekarang di dalam header -->
+      <div id="searchContainer" class="container">
+        <div class="search-floating">
+          <i class="bi bi-search text-muted ms-2"></i>
+          <input id="mainSearch" class="form-control" placeholder="Cari layanan atau merchant..." oninput="handleSearch(event)" />
+        </div>
+      </div>
+    </header>
+
+    <div id="pageContainer" class="pb-5 mb-5 pt-3">
+      <!-- Halaman Pemilihan Merchant -->
+      <main id="restaurantSelectionPage" class="container mt-4">
+          <!-- Carousel Promo -->
+          <section id="promoCarouselSection" class="mb-4">
+            <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" style="border-radius: var(--card-radius);">
+                    <div class="carousel-item active">
+                        <img src="futago_ya.jpg.jpg" class="d-block w-100" style="height: 180px; object-fit: cover;" alt="Promo 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="photomatics.jpg.jpg" class="d-block w-100" style="height: 180px; object-fit: cover;" alt="Promo 2">
+                    </div>
+                </div>
+            </div>
+          </section>
+
+          <h4>Pilih Merchant</h4>
+          <div id="restaurantList" class="row g-3"></div>
+      </main>
+      
+      <!-- Halaman Menu -->
+      <main id="menuPage" class="container mt-4 d-none">
+          <button class="btn btn-sm btn-outline-secondary mb-3" onclick="showPage('restaurantSelectionPage')"><i class="bi bi-arrow-left"></i> Merchant Lain</button>
+          <h4 id="restaurantNameHeader"></h4>
+          <div id="queueInfo" class="alert alert-info">Antrean saat ini: <span id="activeQueue">0</span> / <span id="queueCapacity">0</span></div>
+          <section class="mb-3"><div id="categoryChips" class="d-flex gap-2 overflow-auto pb-2"></div></section>
+          <section class="mb-3"><div id="productRow" class="d-flex overflow-auto pb-3"></div></section>
+          <section class="mb-3">
+              <strong>Ulasan</strong> <small id="avgRating" class="text-muted"></small>
+              <div id="reviewsList" class="mt-2"></div>
+          </section>
+      </main>
+
+      <!-- Halaman Riwayat -->
+      <div id="historyPage" class="container mt-4 d-none">
+          <h4>Riwayat Pesanan</h4>
+          <div id="purchaseHistoryList"></div>
+      </div>
+
+      <!-- Halaman Notifikasi -->
+      <div id="notificationsPage" class="container mt-4 d-none">
+          <div class="d-flex justify-content-between align-items-center">
+              <h4>Notifikasi</h4>
+              <button class="btn btn-sm btn-outline-danger" onclick="clearNotifications()">Bersihkan</button>
+          </div>
+          <div id="notificationList" class="mt-3"></div>
+      </div>
+      
+      <!-- Halaman Forum User -->
+      <div id="supportPage" class="container mt-4 d-none">
+        <h4>Pusat Interaksi Pengguna</h4>
+        <div class="card border-0 shadow-sm p-3 mb-4">
+            <h5><i class="bi bi-people-fill"></i> Forum Pengguna</h5>
+            <p class="text-muted">Bagikan pengalaman atau diskusikan apa pun tentang Antre.in dengan pengguna lain.</p>
+            <div id="forumMessages" class="mb-3 p-2 bg-light rounded" style="max-height: 300px; overflow-y: auto;">
+            </div>
+            <div class="input-group">
+                <input type="text" id="forumInput" class="form-control" placeholder="Tulis pesan Anda...">
+                <button class="btn btn-primary" type="button" onclick="postToForum()">Kirim</button>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm p-3">
+            <h5><i class="bi bi-headset"></i> Hubungi Admin Antre.in</h5>
+            <p class="text-muted">Punya pertanyaan atau masalah? Tim kami siap membantu.</p>
+            <div class="mb-2">
+                <textarea id="supportTicketText" class="form-control" rows="4" placeholder="Jelaskan pertanyaan atau masalah Anda di sini..."></textarea>
+            </div>
+            <div class="d-grid">
+                <button class="btn btn-success" onclick="sendSupportTicket()">Kirim Pertanyaan</button>
+            </div>
+        </div>
+      </div>
+
+      <!-- Halaman Profil -->
+      <div id="profilePage" class="container mt-4 d-none">
+          <h4>Profil & Wallet</h4>
+          <div class="card border-0 shadow-sm p-3 mb-3">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                  <img id="profileAvatar" src="https://placehold.co/96x96/f8efed/003ca6?text=U" alt="avatar" width="80" height="80" class="rounded-circle" style="object-fit:cover;">
+                  <div>
+                      <h5 id="profileName" class="mb-0"></h5>
+                      <span id="profileLoyalty" class="loyalty-badge"></span>
+                  </div>
+              </div>
+              <div class="d-flex justify-content-around text-center">
+                  <div>
+                      <small class="text-muted">Poin</small>
+                      <h5 id="profilePoints" class="mb-0">0</h5>
+                  </div>
+                  <div>
+                      <small class="text-muted">Wallet</small>
+                      <h5 id="profileWallet" class="mb-0">Rp0</h5>
+                  </div>
+              </div>
+          </div>
+           <div class="card border-0 shadow-sm p-3 mb-3">
+             <h5>Antre.in Wallet</h5>
+             <p class="text-muted">Isi saldo untuk pembayaran lebih cepat.</p>
+             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#topupModal">Top-up Saldo</button>
+           </div>
+           <div class="card border-0 shadow-sm p-3 mb-3">
+                <h5>Tukar Poin</h5>
+                <p class="text-muted">Tukarkan poin Anda dengan voucher UMKM!</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="redeemPoints(10, 10000)">
+                        Tukar 10 Poin <i class="bi bi-arrow-right"></i> Voucher Rp 10.000
+                    </button>
+                     <button class="btn btn-outline-primary" onclick="redeemPoints(50, 100000)">
+                        Tukar 50 Poin <i class="bi bi-arrow-right"></i> Voucher Rp 100.000
+                    </button>
+                     <button class="btn btn-outline-primary" onclick="redeemPoints(100, 200000)">
+                        Tukar 100 Poin <i class="bi bi-arrow-right"></i> Voucher Rp 200.000
+                    </button>
+               </div>
+</div>
+<div class="d-grid">
+  <button class="btn btn-outline-danger" onclick="logout()">Keluar & Hapus Data</button>
+</div>
+</div>
+</div>
+
+    <!-- Navigasi Bawah -->
+    <div class="bottom-nav">
+      <div class="nav-item home-item active-nav" onclick="showPage('restaurantSelectionPage', this)">
+        <i class="bi bi-house-door-fill"></i><small>Home</small>
+      </div>
+      <div class="nav-item" onclick="showPage('historyPage', this)">
+        <i class="bi bi-receipt"></i><small>Riwayat</small>
+      </div>
+      <div class="nav-item" onclick="showPage('supportPage', this)">
+        <i class="bi bi-chat-dots-fill"></i><small>Forum</small>
+      </div>
+      <div class="nav-item" onclick="showPage('notificationsPage', this)">
+        <i class="bi bi-bell-fill"></i><small>Notifikasi</small>
+        <span id="notifCount" class="badge bg-danger rounded-pill d-none">0</span>
+      </div>
+       <div class="nav-item" onclick="openCart()">
+        <i class="bi bi-cart-fill"></i><small>Keranjang</small>
+        <span id="cartBadge" class="badge bg-danger rounded-pill d-none">0</span>
+      </div>
+      <div class="nav-item" onclick="showPage('profilePage', this)">
+        <i class="bi bi-person-fill"></i><small>Profil</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+    <div class="modal fade" id="upsellModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Penawaran Spesial!</h5></div>
+                <div class="modal-body" id="upsellModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="declineUpsellBtn">Lain Kali</button>
+                    <button type="button" class="btn btn-primary" id="acceptUpsellBtn">Ya, Tambahkan!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="checkoutModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Keranjang Saya</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="checkoutItems"></div><div class="mt-3 mb-2" id="voucherSection"><label for="voucherSelect" class="form-label">Gunakan Voucher</label><select id="voucherSelect" class="form-select" onchange="renderCartItems()"><option value="none">Tidak ada voucher</option></select></div><hr><div class="d-flex justify-content-between"><span class="text-muted">Subtotal</span><span>Rp <span id="checkoutSubtotal">0</span></span></div><div class="d-flex justify-content-between text-success mb-2"><span class="text-muted">Diskon</span><span>- Rp <span id="checkoutDiscount">0</span></span></div><div class="d-flex justify-content-between"><strong>Total</strong><strong>Rp <span id="checkoutTotal">0</span></strong></div><div class="mt-3"><label class="form-label">Metode Pembayaran</label><select id="payMethod" class="form-select"><option value="wallet">Antre.in Wallet</option><option value="qris">QRIS</option><option value="other">Cash</option></select></div></div><div class="modal-footer"><button id="payBtn" class="btn btn-primary w-100" onclick="confirmPayment()">Bayar & Ambil Antrean</button></div></div></div></div>
+    <div class="modal fade" id="topupModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Top-up Antre.in Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="mb-3"><label class="form-label">Jumlah Top-up</label><input type="number" id="topupAmount" class="form-control" placeholder="min. Rp10.000"></div><label class="form-label">Pilih Metode</label><div class="d-grid gap-2"><button class="btn btn-outline-primary" onclick="processTopup('QRIS')">QRIS</button></div></div></div></div></div>
+    <div class="modal fade" id="paymentProcessModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="paymentProcessTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body text-center" id="paymentProcessBody"></div><div class="modal-footer"><button id="paymentConfirmationButton" class="btn btn-success" onclick="simulateSuccessfulPayment('topup')">Saya Sudah Bayar</button></div></div></div></div>
+    <div class="modal fade" id="queueModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content p-4"><p class="mb-0">Nomor Antrean Anda</p><p class="display-1" id="queueNumber">A-01</p><p>Silakan tunggu pesanan Anda diproses.</p><div id="queueModalActions" class="d-grid gap-2"></div></div></div></div>
+    <div class="modal fade" id="reviewModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Beri Ulasan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="reviewPurchaseId"><select id="reviewRating" class="form-select mb-2"><option value="5">5 ★ - Sangat Baik</option><option value="4">4 ★ - Baik</option><option value="3">3 ★ - Biasa</option><option value="2">2 ★ - Kurang</option><option value="1">1 ★ - Buruk</option></select><textarea id="reviewText" class="form-control" rows="3" placeholder="Tulis ulasan..."></textarea></div><div class="modal-footer"><button class="btn btn-primary" onclick="submitReview()">Kirim & Dapat Poin</button></div></div></div></div>
+    <div class="modal fade" id="pinModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Masukkan PIN Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p class="text-muted">Untuk keamanan, masukkan 6 digit PIN Anda.</p><input type="password" id="walletPin" class="form-control text-center" maxlength="6" placeholder="******" style="font-size: 1.5rem; letter-spacing: 0.5rem;"></div><div class="modal-footer"><button class="btn btn-primary w-100" onclick="verifyPinAndPay()">Konfirmasi Pembayaran</button></div></div></div></div>
+    <div class="modal fade" id="paymentStatusModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><div class="modal-body"><div id="paymentStatusIcon" class="mb-3"></div><h4 id="paymentStatusTitle" class="modal-title mb-2"></h4><p id="paymentStatusMessage"></p><button id="paymentStatusButton" type="button" class="btn w-100" data-bs-dismiss="modal">Lanjutkan</button></div></div></div></div>
+    <div class="modal fade" id="redeemConfirmModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Konfirmasi Penukaran Poin</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="redeemConfirmBody"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="button" class="btn btn-primary" id="confirmRedeemButton">Tukarkan</button></div></div></div></div>
+    <div class="modal fade" id="merchantChatModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="merchantChatTitle">Chat dengan Penjual</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="chatPurchaseId">
+                    <div id="chatMessages" class="mb-3 p-2 bg-light rounded"></div>
+                    <div class="input-group">
+                        <input type="text" id="chatInput" class="form-control" placeholder="Ketik pesan...">
+                        <button class="btn btn-primary" type="button" onclick="sendChatMessage()"><i class="bi bi-send-fill"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <!-- Bootstrap JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Skrip Aplikasi (Sisi Klien) -->
+  <script>
+    /* ------------------------------
+        Status & Data Aplikasi
+        ------------------------------ */
+    let appState = {};
+    let notificationToast;
+    let selectedRestaurantId = null;
+    let temporaryTopupAmount = 0;
+    let onPaymentStatusModalClose = null;
+    let upsellModalInstance; 
+    
+    const restaurants = [
+        {id: 1, name: 'Mie Kondang', location: 'Blok M Square', img: 'mie_kondang.jpg', capacity: 10, activeQueue: 3},
+        {id: 2, name: 'Toko Kopi Tuku', location: 'Blok M', img: 'toko kopi tuku.jpg', capacity: 5, activeQueue: 4},
+        {id: 3, name: 'Futago Ya!', location: 'Blok M', img: 'futago_ya.jpg.jpg', capacity: 7, activeQueue: 1},
+        {id: 4, name: 'Photomatics Studio', location: 'Blok M', img: 'photomatics.jpg.jpg', capacity: 8, activeQueue: 2},
+        {id: 5, name: 'Tohangs Barber', location: 'Blok M', img: 'tohangs_barber.jpg.jpg', capacity: 5, activeQueue: 4},
+    ];
+    const products = [
+        {id:1, restaurantId: 1, name:'Mie Ayam Bakso', category:'Mie', price:25000, img:'mie_ayam_bakso.jpg'},
+        {id:2, restaurantId: 1, name:'Pangsit Goreng', category:'Camilan', price:15000, img:'pangsit_goreng.jpg'},
+        {id:3, restaurantId: 1, name:'Es Teh Manis', category:'Minuman', price:5000, img:'es teh.jpg'},
+        {id:4, restaurantId: 2, name:'Es Kopi Susu Tetangga', category:'Kopi', price:18000, img:'kopi susu tetangga.jpg'},
+        {id:5, restaurantId: 2, name:'Americano', category:'Kopi', price:22000, img:'americano.jpg'},
+        {id:6, restaurantId: 2, name:'Donat Kampung', category:'Minuman', price:15000, img:'donat kampung tuku.jpg'},
+        {id:7, restaurantId: 3, name:'Ramen Original', category:'Ramen', price:58000, img:'ramen.jpg'},
+        {id:8, restaurantId: 3, name:'Chicken Katsu Curry', category:'Nasi', price:65000, img:'chicken katsu.jpg'},
+        {id:16, restaurantId: 3, name:'Ocha Dingin', category:'Minuman', price:12000, img:'ocha.jpg'},
+        {id:9, restaurantId: 4, name:'Paket Foto Standard', category:'Foto', price:50000, img:'paket standar.jpg'},
+        {id:10, restaurantId: 4, name:'Paket Foto Grup', category:'Foto', price:85000, img:'paket grup.jpg'},
+        {id:11, restaurantId: 4, name:'Cetak Foto Tambahan', category:'Lainnya', price:15000, img:'cetak photo tambahan.jpg'},
+        {id:12, restaurantId: 5, name:'Potong Rambut Pria', category:'Cukur', price:75000, img:'potong rambut pria.jpg'},
+        {id:13, restaurantId: 5, name:'Cukur Jenggot & Kumis', category:'Cukur', price:40000, img:'cukur jenggot.jpg'},
+        {id:14, restaurantId: 5, name:'Paket Komplit', category:'Paket', price:100000, img:'paket lengkap.jpg'},
+        {id:15, restaurantId: 5, name:'Hair Tonic Massage', category:'Perawatan', price:30000, img:'hair tonic.jpg'},
+    ];
+    
+    const upsellOffers = [
+        { restaurantId: 1, productId: 3, offerPrice: 3000, message: 'Hanya dengan Rp 3.000, tambah <strong>Es Teh Manis</strong> ke pesanan Anda?' },
+        { restaurantId: 2, productId: 6, offerPrice: 10000, message: 'Lengkapi kopimu! Tambah <strong>Donat Kampung</strong> hanya Rp 5.000.' },
+        { restaurantId: 3, productId: 16, offerPrice: 8000, message: 'Segarkan harimu! Tambah <strong>Ocha Dingin</strong> hanya Rp 6.000.' },
+        { restaurantId: 4, productId: 11, offerPrice: 10000, message: 'Abadikan lebih banyak momen! <strong>Cetak Foto Tambahan</strong> hanya Rp 10.000.' },
+        { restaurantId: 5, productId: 15, offerPrice: 20000, message: 'Rileks sejenak? Tambah <strong>Hair Tonic Massage</strong> cuma Rp 20.000.' }
+    ];
+
+       /* ------------------------------
+        Manajemen Status (localStorage)
+        ------------------------------ */
+    function loadState() {
+        const defaultState = {
+            user: { name: 'Pengguna', phone: '08123456789', avatarUrl: '', points: 100, wallet: 100000, pin: '123456', vouchers: [] },
+            cart: [],
+            purchaseHistory: [],
+            notifications: [],
+            reviews: {},
+            forumMessages: [],
+            supportTickets: []
+        };
+        const savedState = JSON.parse(localStorage.getItem('antrein-app-state'));
+        appState = { ...defaultState, ...savedState };
+        appState.user = { ...defaultState.user, ...(savedState ? savedState.user : {}) };
+        appState.forumMessages = appState.forumMessages || [];
+        appState.supportTickets = appState.supportTickets || [];
+    }
+
+    function saveState() {
+        localStorage.setItem('antrein-app-state', JSON.stringify(appState));
+    }
+
+    /* ------------------------------
+        Inisialisasi
+        ------------------------------ */
+    function init() {
+        notificationToast = new bootstrap.Toast(document.getElementById('notificationToast'));
+        upsellModalInstance = new bootstrap.Modal(document.getElementById('upsellModal'));
+        if (localStorage.getItem('antrein-loggedin') === 'true') {
+            loadState();
+            goToDashboard();
+        } else {
+            document.getElementById('authScreen').classList.remove('d-none');
+        }
+    }
+
+    /* ------------------------------
+        Otentikasi & Navigasi
+        ------------------------------ */
+    function loginUser() {
+        const phone = document.getElementById('inputPhone').value.trim();
+        const password = document.getElementById('inputPassword').value.trim();
+
+        if (!phone || !password) {
+            return showToast("Nomor telepon dan password tidak boleh kosong.");
+        }
+        
+        loadState(); // Muat data pengguna default/tersimpan
+
+        // Simulasi validasi login
+        if (phone === appState.user.phone && password === appState.user.pin) {
+            saveState(); // Simpan state jika ada perubahan dari loadState (meskipun di sini tidak ada)
+            localStorage.setItem('antrein-loggedin', 'true');
+            goToDashboard();
+        } else {
+            showToast("Nomor telepon atau password salah.");
+        }
+    }
+
+    function goToDashboard() {
+        document.getElementById('authScreen').classList.add('d-none');
+        document.getElementById('dashboard').classList.remove('d-none');
+        updateAllUI();
+        showPage('restaurantSelectionPage', document.querySelector('.home-item'));
+    }
+
+    function logout() {
+        localStorage.removeItem('antrein-loggedin');
+        localStorage.removeItem('antrein-app-state');
+        window.location.reload();
+    }
+
+    function showPage(pageId, element) {
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(item => item.classList.remove('active-nav'));
+        if (element) element.classList.add('active-nav');
+        
+        document.querySelectorAll('#pageContainer > *').forEach(page => page.classList.add('d-none'));
+        document.getElementById(pageId)?.classList.remove('d-none');
+        
+        const renderActions = {
+            restaurantSelectionPage: renderRestaurantSelection,
+            historyPage: renderHistoryPage,
+            notificationsPage: renderNotificationsPage,
+            profilePage: renderProfilePage,
+            supportPage: renderSupportPage
+        };
+        if(renderActions[pageId]) renderActions[pageId]();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ------------------------------
+        Fungsi Render UI
+        ------------------------------ */
+    function updateAllUI() {
+        updateHeaderUI();
+        updateCartBadge();
+        updateNotificationBadge();
+    }
+    
+    function getLoyaltyTier(points = 0) {
+        if (points >= 5000) return { name: 'Platinum', badgeClass: 'platinum' };
+        if (points >= 2500) return { name: 'Gold', badgeClass: 'gold' };
+        if (points >= 500) return { name: 'Silver', badgeClass: 'silver' };
+        return { name: '', badgeClass: ''};
+    }
+
+    function updateHeaderUI() {
+        const { name, points, wallet, avatarUrl } = appState.user;
+        const loyalty = getLoyaltyTier(points);
+        document.getElementById('hdrName').innerText = name;
+        document.getElementById('hdrPoints').innerText = formatRupiah(points);
+        document.getElementById('hdrWallet').innerText = formatRupiah(wallet);
+        document.getElementById('hdrAvatar').src = avatarUrl || `https://placehold.co/96x96/f8efed/003ca6?text=${name?.[0]?.toUpperCase() || 'A'}`;
+        const loyaltyBadge = document.getElementById('hdrLoyalty');
+        loyaltyBadge.textContent = loyalty.name;
+        loyaltyBadge.className = `loyalty-badge ${loyalty.badgeClass}`;
+        loyaltyBadge.classList.toggle('d-none', !loyalty.name);
+    }
+    
+    function updateCartBadge() {
+        const cartCount = appState.cart.reduce((sum, item) => sum + item.qty, 0);
+        const cartBadge = document.getElementById('cartBadge');
+        cartBadge.textContent = cartCount;
+        cartBadge.classList.toggle('d-none', cartCount === 0);
+    }
+
+    function updateNotificationBadge() {
+        const unreadCount = appState.notifications.filter(n => !n.read).length;
+        const notifCount = document.getElementById('notifCount');
+        notifCount.textContent = unreadCount;
+        notifCount.classList.toggle('d-none', unreadCount === 0);
+    }
+    
+    function renderRestaurantSelection(filteredList = restaurants) {
+        const listEl = document.getElementById('restaurantList');
+        listEl.innerHTML = filteredList.map(r => `
+            <div class="col-12 col-md-6">
+                <div class="restaurant-card" onclick="selectRestaurant('${r.id}')">
+                    <div class="card"><img src="${r.img}" class="card-img-top" alt="${r.name}">
+                    <div class="card-body"><h5 class="card-title">${r.name}</h5><p class="card-text text-muted">${r.location}</p></div></div>
+                </div></div>`).join('');
+    }
+    
+    function selectRestaurant(restId) {
+        selectedRestaurantId = restId;
+        const restaurant = restaurants.find(r => r.id == restId);
+        document.getElementById('restaurantNameHeader').innerText = restaurant.name;
+        
+        const queueInfo = document.getElementById('queueInfo');
+        document.getElementById('activeQueue').textContent = restaurant.activeQueue;
+        document.getElementById('queueCapacity').textContent = restaurant.capacity;
+
+        document.getElementById('mainSearch').value = '';
+        renderMenuPage();
+        showPage('menuPage');
+    }
+    
+    function renderMenuPage(filter='All') {
+        const searchTerm = document.getElementById('mainSearch').value.toLowerCase();
+        const restaurantProducts = products.filter(p => p.restaurantId == selectedRestaurantId);
+        const categories = ['All', ...new Set(restaurantProducts.map(p => p.category))];
+        document.getElementById('categoryChips').innerHTML = categories.map(cat => `
+            <div class="chip btn btn-sm ${cat === filter ? 'btn-primary' : 'btn-outline-primary'}" onclick="renderMenuPage('${cat}')">${cat}</div>`).join('');
+
+        const filtered = restaurantProducts
+            .filter(p => filter === 'All' || p.category === filter)
+            .filter(p => p.name.toLowerCase().includes(searchTerm));
+
+        document.getElementById('productRow').innerHTML = filtered.length ? filtered.map(p => `
+            <div class="product-card">
+                <img class="product-img" src="${p.img}" alt="${p.name}">
+                <div class="mt-2"><div class="title">${p.name}</div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div class="price">Rp ${formatRupiah(p.price)}</div>
+                        <button class="btn btn-primary btn-sm" onclick="addToCart('${p.id}')"><i class="bi bi-plus-lg"></i></button>
+                    </div>
+                </div>
+            </div>`).join('') : '<p class="text-muted w-100 text-center">Layanan tidak ditemukan.</p>';
+        
+        renderReviews();
+    }
+    
+    function renderHistoryPage() {
+        const listEl = document.getElementById('purchaseHistoryList');
+        if (appState.purchaseHistory.length === 0) {
+            listEl.innerHTML = '<p class="text-muted">Anda belum memiliki riwayat pesanan.</p>';
+            return;
+        }
+        listEl.innerHTML = [...appState.purchaseHistory].reverse().map(purchase => {
+            const itemsHtml = purchase.items.map(item => `<li>${item.name} x ${item.qty}</li>`).join('');
+            
+            const timeSinceOrder = new Date() - new Date(purchase.time);
+            const eightHoursInMillis = 8 * 60 * 60 * 1000;
+            let chatButtonHtml = '';
+            if (timeSinceOrder < eightHoursInMillis) {
+                chatButtonHtml = `<button class="btn btn-sm btn-success mt-2" onclick="openMerchantChat('${purchase.id}')"><i class="bi bi-chat-right-text-fill"></i> Chat Penjual</button>`;
+            }
+
+            return `<div class="card card-body mb-3">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong>${purchase.restaurantName}</strong><br>
+                        <small class="text-muted">${new Date(purchase.time).toLocaleString('id-ID')}</small>
+                    </div>
+                    <div><strong>Rp ${formatRupiah(purchase.total)}</strong></div>
+                </div>
+                <hr>
+                <ul>${itemsHtml}</ul>
+                <div class="text-end">${chatButtonHtml}</div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderNotificationsPage() {
+        const listEl = document.getElementById('notificationList');
+        if (appState.notifications.length === 0) {
+            listEl.innerHTML = '<p class="text-muted text-center">Tidak ada notifikasi.</p>';
+            return;
+        }
+
+        listEl.innerHTML = [...appState.notifications].reverse().map(notif => {
+            let actionHtml = '';
+            if (notif.type === 'review_reminder') {
+                const purchase = appState.purchaseHistory.find(p => p.id === notif.purchaseId);
+                if (purchase) {
+                    const daysPassed = (new Date() - new Date(purchase.time)) / (1000 * 60 * 60 * 24);
+                    if (purchase.reviewed) {
+                        actionHtml = '<p class="mt-2 mb-0"><small class="text-success">✔ Anda sudah memberi ulasan.</small></p>';
+                    } else if (daysPassed > 7) {
+                        actionHtml = '<p class="mt-2 mb-0"><small class="text-muted">Kesempatan memberi ulasan sudah hangus.</small></p>';
+                    } else {
+                        actionHtml = `<button class="btn btn-sm btn-outline-primary mt-2" onclick="openReviewModal('${purchase.id}', '${purchase.restaurantId}')">Beri Ulasan</button>`;
+                    }
+                }
+            }
+
+            return `<div class="alert ${notif.read ? 'alert-secondary' : 'alert-info'}">
+                ${notif.text}<br><small class="text-muted">${new Date(notif.time).toLocaleString('id-ID')}</small>
+                ${actionHtml}
+            </div>`;
+        }).join('');
+
+        appState.notifications.forEach(n => n.read = true);
+        saveState();
+        updateNotificationBadge();
+    }
+    
+    function renderProfilePage() {
+        const { name, points, wallet, avatarUrl, phone } = appState.user;
+        const loyalty = getLoyaltyTier(points);
+        
+        document.getElementById('profileAvatar').src = avatarUrl || `https://placehold.co/96x96/f8efed/003ca6?text=${name?.[0]?.toUpperCase() || 'A'}`;
+        document.getElementById('profileName').innerText = name;
+        document.getElementById('profilePoints').innerText = formatRupiah(points);
+        document.getElementById('profileWallet').innerText = `Rp${formatRupiah(wallet)}`;
+        const loyaltyBadge = document.getElementById('profileLoyalty');
+        loyaltyBadge.textContent = loyalty.name;
+        loyaltyBadge.className = `loyalty-badge ${loyalty.badgeClass}`;
+        loyaltyBadge.classList.toggle('d-none', !loyalty.name);
+        
+        document.getElementById('editAvatar').value = avatarUrl || '';
+        document.getElementById('editName').value = name || '';
+        document.getElementById('editPhone').value = phone || '';
+    }
+
+    function updateProfile() {
+        appState.user.name = document.getElementById('editName').value.trim();
+        appState.user.phone = document.getElementById('editPhone').value.trim();
+        appState.user.avatarUrl = document.getElementById('editAvatar').value.trim();
+        saveState();
+        updateAllUI();
+        renderProfilePage();
+        showToast("Profil berhasil diperbarui!");
+    }
+
+    function renderSupportPage() {
+        const forumEl = document.getElementById('forumMessages');
+        if (appState.forumMessages.length === 0) {
+            forumEl.innerHTML = '<p class="text-muted text-center small">Belum ada pesan di forum.</p>';
+        } else {
+            forumEl.innerHTML = appState.forumMessages.map(msg => `
+                <div class="mb-2">
+                    <strong>${msg.name}:</strong>
+                    <p class="mb-0 bg-white p-2 rounded">${msg.text}</p>
+                    <small class="text-muted">${new Date(msg.time).toLocaleTimeString('id-ID')}</small>
+                </div>
+            `).join('');
+        }
+        forumEl.scrollTop = forumEl.scrollHeight;
+    }
+
+    /* ------------------------------
+        Logika Inti (Keranjang, Checkout, dll.)
+        ------------------------------ */
+    const formatRupiah = (x) => new Intl.NumberFormat('id-ID').format(x || 0);
+    
+    function showToast(message) {
+        document.getElementById('notificationToastBody').innerText = message;
+        notificationToast.show();
+    }
+
+    function addNotification(notification) {
+        appState.notifications.push({ ...notification, time: new Date().toISOString(), read: false });
+        saveState();
+        updateNotificationBadge();
+    }
+    
+    function handleSearch(event) {
+        const searchTerm = event.target.value.toLowerCase();
+        const restaurantPage = document.getElementById('restaurantSelectionPage');
+        const menuPage = document.getElementById('menuPage');
+
+        if (!restaurantPage.classList.contains('d-none')) {
+            const filtered = restaurants.filter(r => 
+                r.name.toLowerCase().includes(searchTerm) || 
+                r.location.toLowerCase().includes(searchTerm)
+            );
+            renderRestaurantSelection(filtered);
+        } else if (!menuPage.classList.contains('d-none')) {
+            const activeCategoryEl = document.querySelector('#categoryChips .btn-primary');
+            const activeCategory = activeCategoryEl ? activeCategoryEl.innerText : 'All';
+            renderMenuPage(activeCategory);
+        }
+    }
+    
+    function addToCart(productId) {
+        const p = products.find(x => x.id == productId);
+        if (!p) return;
+
+        if (appState.cart.length > 0 && appState.cart[0].restaurantId != p.restaurantId) {
+            return showToast("Anda hanya bisa memesan dari satu merchant dalam satu waktu.");
+        }
+        
+        const existingItem = appState.cart.find(item => item.id == productId);
+        if (existingItem) {
+            existingItem.qty++;
+        } else {
+            appState.cart.push({ ...p, qty: 1 });
+        }
+        saveState();
+        updateCartBadge();
+        showToast(`${p.name} ditambahkan.`);
+    }
+
+    function renderCartItems() {
+        const listEl = document.getElementById('checkoutItems');
+        const subtotal = appState.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        
+        if (appState.cart.length === 0) {
+            listEl.innerHTML = '<p class="text-muted text-center">Keranjang kosong.</p>';
+            bootstrap.Modal.getInstance(document.getElementById('checkoutModal'))?.hide();
+        } else {
+             listEl.innerHTML = appState.cart.map((c, index) => `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>${c.name}<br><small>x ${c.qty} @ Rp${formatRupiah(c.price)}</small></div>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3 fw-bold">Rp ${formatRupiah(c.price * c.qty)}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${index})">&times;</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        const voucherSelect = document.getElementById('voucherSelect');
+        const previouslySelectedVoucher = voucherSelect.value;
+        const availableVouchers = appState.user.vouchers.filter(v => !v.isUsed);
+        
+        voucherSelect.innerHTML = '<option value="none">Jangan gunakan voucher</option>';
+        availableVouchers.forEach(v => {
+            const option = document.createElement('option');
+            option.value = v.id;
+            option.textContent = v.name;
+            voucherSelect.appendChild(option);
+        });
+        
+        voucherSelect.value = previouslySelectedVoucher;
+        document.getElementById('voucherSection').classList.toggle('d-none', availableVouchers.length === 0);
+
+        const selectedVoucherId = voucherSelect.value;
+        let discount = 0;
+        const selectedVoucher = appState.user.vouchers.find(v => v.id === selectedVoucherId);
+
+        if (selectedVoucher) {
+            discount = selectedVoucher.value;
+        }
+
+        const total = Math.max(0, subtotal - discount);
+
+        document.getElementById('checkoutSubtotal').innerText = formatRupiah(subtotal);
+        document.getElementById('checkoutDiscount').innerText = formatRupiah(discount);
+        document.getElementById('checkoutTotal').innerText = formatRupiah(total);
+    }
+    
+    function removeFromCart(index) {
+        appState.cart.splice(index, 1);
+        saveState();
+        renderCartItems();
+        updateCartBadge();
+    }
+    
+    function openCart() {
+        if (appState.cart.length === 0) return showToast("Keranjang kosong!");
+        renderCartItems();
+        new bootstrap.Modal(document.getElementById('checkoutModal')).show();
+    }
+    
+    function confirmPayment() {
+        bootstrap.Modal.getInstance(document.getElementById('checkoutModal'))?.hide();
+        
+        if (appState.cart.length === 0) return;
+        const currentRestaurantId = appState.cart[0].restaurantId;
+        const offer = upsellOffers.find(o => o.restaurantId == currentRestaurantId);
+        const isItemInCart = appState.cart.some(item => item.id == offer?.productId);
+
+        if (offer && !isItemInCart) {
+            document.getElementById('upsellModalBody').innerHTML = offer.message;
+            document.getElementById('acceptUpsellBtn').onclick = () => addUpsellAndPay(offer.productId, offer.offerPrice);
+            document.getElementById('declineUpsellBtn').onclick = () => {
+                upsellModalInstance.hide();
+                proceedToPayment();
+            };
+            upsellModalInstance.show();
+        } else {
+            proceedToPayment();
+        }
+    }
+
+    function addUpsellAndPay(productId, offerPrice) {
+        const productToAdd = products.find(p => p.id == productId);
+        if (!productToAdd) return;
+
+        appState.cart.push({ ...productToAdd, qty: 1, price: offerPrice });
+        saveState();
+        updateCartBadge();
+        showToast(`${productToAdd.name} (Promo) ditambahkan!`);
+        
+        upsellModalInstance.hide();
+        proceedToPayment();
+    }
+
+    function proceedToPayment() {
+        renderCartItems(); 
+
+        const totalText = document.getElementById('checkoutTotal').innerText;
+        const total = parseInt(totalText.replace(/\./g, ''));
+        const payMethod = document.getElementById('payMethod').value;
+
+        if (payMethod === 'wallet' && appState.user.wallet < total) {
+            return showToast("Saldo wallet tidak cukup!");
+        }
+
+        const restaurantOfOrder = restaurants.find(r => r.id == selectedRestaurantId);
+        if (restaurantOfOrder.activeQueue >= restaurantOfOrder.capacity) {
+            addNotification({ text: `Pesanan di-hold karena antrean di ${restaurantOfOrder.name} membludak.` });
+            return showToast("Maaf, antrean penuh. Coba lagi nanti.");
+        }
+
+        if (payMethod === 'wallet') {
+            new bootstrap.Modal(document.getElementById('pinModal')).show();
+        } else if (payMethod === 'qris') {
+            showPaymentModal('order');
+        } else {
+            processSuccessfulOrder();
+        }
+    }
+
+    function verifyPinAndPay() {
+        const enteredPin = document.getElementById('walletPin').value;
+        if (enteredPin === appState.user.pin) {
+            bootstrap.Modal.getInstance(document.getElementById('pinModal')).hide();
+            document.getElementById('walletPin').value = '';
+            processSuccessfulOrder();
+        } else {
+            showToast("PIN salah. Coba lagi.");
+        }
+    }
+
+    function processTopup() {
+        const amount = parseInt(document.getElementById('topupAmount').value);
+        if (!amount || amount < 10000) return showToast("Masukkan jumlah top-up, minimal Rp10.000.");
+        
+        temporaryTopupAmount = amount;
+        bootstrap.Modal.getInstance(document.getElementById('topupModal')).hide();
+        showPaymentModal('topup');
+    }
+
+    function showPaymentModal(context) {
+        const totalText = document.getElementById('checkoutTotal').innerText;
+        const total = context === 'order' ? parseInt(totalText.replace(/\./g, '')) : temporaryTopupAmount;
+        const title = context === 'order' ? 'Pembayaran Pesanan' : 'Top-up Dompet';
+        const purpose = context === 'order' ? 'payment' : 'topup';
+
+        document.getElementById('paymentProcessTitle').innerText = title;
+        document.getElementById('paymentProcessBody').innerHTML = `
+            <p>Silakan scan QRIS di bawah untuk membayar</p>
+            <h3>Rp ${formatRupiah(total)}</h3>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=antrein-${purpose}-${appState.user.name}-${total}" alt="QR Code" class="my-3">
+            <p>Setelah membayar, klik tombol di bawah.</p>`;
+        
+        document.getElementById('paymentConfirmationButton').setAttribute('onclick', `simulateSuccessfulPayment('${context}')`);
+        
+        new bootstrap.Modal(document.getElementById('paymentProcessModal')).show();
+    }
+    
+    function simulateSuccessfulPayment(context) {
+        const paymentProcessModal = bootstrap.Modal.getInstance(document.getElementById('paymentProcessModal'));
+        paymentProcessModal?.hide();
+
+        setTimeout(() => {
+            if (context === 'topup') {
+                if (temporaryTopupAmount > 0) {
+                    appState.user.wallet += temporaryTopupAmount;
+                    addNotification({ text: `Top-up wallet sebesar Rp${formatRupiah(temporaryTopupAmount)} berhasil.` });
+                    saveState();
+                    updateAllUI();
+                    temporaryTopupAmount = 0;
+                    showPaymentStatus('success', 'Top-up saldo Anda berhasil.');
+                }
+            } else if (context === 'order') {
+                processSuccessfulOrder();
+            }
+        }, 200);
+    }
+
+    function processSuccessfulOrder() {
+        const payMethod = document.getElementById('payMethod').value;
+        const totalText = document.getElementById('checkoutTotal').innerText;
+        const finalTotal = parseInt(totalText.replace(/\./g, ''));
+        const subtotal = appState.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+        const purchaseId = 'p' + Date.now();
+        
+        const voucherSelect = document.getElementById('voucherSelect');
+        const usedVoucherId = voucherSelect.value;
+        if (usedVoucherId !== 'none') {
+            const usedVoucher = appState.user.vouchers.find(v => v.id === usedVoucherId);
+            if(usedVoucher) usedVoucher.isUsed = true;
+        }
+
+        if (payMethod === 'wallet') {
+            appState.user.wallet -= finalTotal;
+        }
+        
+        const restaurantOfOrder = restaurants.find(r => r.id == selectedRestaurantId);
+        restaurantOfOrder.activeQueue++;
+        const qnum = 'A-' + String(100 + restaurantOfOrder.activeQueue).slice(1);
+
+        appState.purchaseHistory.push({
+            id: purchaseId,
+            time: new Date().toISOString(), 
+            items: [...appState.cart], 
+            total: subtotal,
+            restaurantName: restaurantOfOrder.name, 
+            restaurantId: selectedRestaurantId,
+            reviewed: false,
+            chatHistory: []
+        });
+
+        appState.cart = [];
+        saveState();
+        
+        addNotification({ text: `Pembayaran berhasil! Nomor antrean Anda adalah ${qnum} di ${restaurantOfOrder.name}.` });
+        
+        showPaymentStatus('success', 'Pembayaran Anda telah diterima dengan baik.', () => {
+            document.getElementById('queueNumber').innerText = qnum;
+
+            const queueModalActions = document.getElementById('queueModalActions');
+            queueModalActions.innerHTML = `
+                <button class="btn btn-success" onclick="openMerchantChat('${purchaseId}')"><i class="bi bi-chat-right-text-fill"></i> Chat Penjual</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+            `;
+
+            new bootstrap.Modal(document.getElementById('queueModal')).show();
+        });
+        
+        updateAllUI();
+
+        setTimeout(() => {
+            addNotification({ text: `Pesanan di ${restaurantOfOrder.name} telah selesai.` });
+            addNotification({ 
+                text: `Jangan lupa beri ulasan untuk pesanan Anda di ${restaurantOfOrder.name} untuk mendapatkan poin!`,
+                type: 'review_reminder',
+                purchaseId: purchaseId
+            });
+        }, 5000);
+    }
+    
+    function openReviewModal(purchaseId, restaurantId) {
+        const purchase = appState.purchaseHistory.find(p => p.id === purchaseId);
+        if (!purchase || purchase.reviewed) return;
+
+        selectedRestaurantId = restaurantId;
+        document.getElementById('reviewPurchaseId').value = purchaseId;
+        document.getElementById('reviewRating').value = "5";
+        document.getElementById('reviewText').value = "";
+        
+        new bootstrap.Modal(document.getElementById('reviewModal')).show();
+    }
+
+    function submitReview() {
+        const purchaseId = document.getElementById('reviewPurchaseId').value;
+        const purchase = appState.purchaseHistory.find(p => p.id === purchaseId);
+        if (!purchase) return showToast("Gagal menemukan pesanan.");
+
+        const rating = parseInt(document.getElementById('reviewRating').value);
+        const text = document.getElementById('reviewText').value.trim();
+        if (!text) return showToast("Ulasan tidak boleh kosong.");
+
+        if (!appState.reviews[purchase.restaurantId]) {
+            appState.reviews[purchase.restaurantId] = [];
+        }
+        appState.reviews[purchase.restaurantId].unshift({
+            rating, text, by: appState.user.name, time: new Date().toISOString()
+        });
+
+        purchase.reviewed = true;
+        
+        const pointsEarned = Math.floor(purchase.total / 10000);
+        let message = 'Terima kasih atas ulasan Anda!';
+
+        if (pointsEarned > 0) {
+            appState.user.points += pointsEarned;
+            message = `Terima kasih! Anda mendapatkan ${pointsEarned} poin.`;
+            addNotification({ text: `Anda mendapatkan ${pointsEarned} poin baru setelah memberi ulasan.` });
+        }
+        
+        saveState();
+        
+        bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+        showToast(message);
+        renderMenuPage();
+        updateAllUI();
+        if (!document.getElementById('notificationsPage').classList.contains('d-none')) {
+            renderNotificationsPage();
+        }
+    }
+    
+   function renderReviews(){
+        const reviewData = appState.reviews[selectedRestaurantId] || [];
+        if (reviewData.length === 0) {
+            document.getElementById('reviewsList').innerHTML = '<small class="text-muted">Belum ada ulasan.</small>';
+            document.getElementById('avgRating').innerText = '';
+            return;
+        }
+        
+        const avg = reviewData.reduce((sum, r) => sum + r.rating, 0) / reviewData.length;
+        document.getElementById('avgRating').innerText = `(${avg.toFixed(1)} ★)`;
+        document.getElementById('reviewsList').innerHTML = reviewData.map(r => `
+            <div class="card card-body mb-2">
+                <strong>${r.by}</strong>
+                <div>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                <small>${r.text}</small>
+            </div>`).join('');
+    }
+
+    function showPaymentStatus(status, message, callback) {
+        const modalEl = document.getElementById('paymentStatusModal');
+        const iconEl = document.getElementById('paymentStatusIcon');
+        const titleEl = document.getElementById('paymentStatusTitle');
+        const messageEl = document.getElementById('paymentStatusMessage');
+        const buttonEl = document.getElementById('paymentStatusButton');
+
+        if (status === 'success') {
+            iconEl.innerHTML = `<i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>`;
+            titleEl.innerText = 'Transaksi Berhasil';
+            buttonEl.className = 'btn btn-primary w-100';
+        } else {
+            iconEl.innerHTML = `<i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>`;
+            titleEl.innerText = 'Transaksi Gagal';
+            buttonEl.className = 'btn btn-danger w-100';
+        }
+        messageEl.innerText = message;
+        
+        onPaymentStatusModalClose = callback;
+
+        const modalInstance = new bootstrap.Modal(modalEl);
+        modalEl.addEventListener('hidden.bs.modal', () => {
+            if (onPaymentStatusModalClose) {
+                onPaymentStatusModalClose();
+                onPaymentStatusModalClose = null;
+            }
+        }, { once: true });
+
+        modalInstance.show();
+    }
+    
+    function redeemPoints(pointsCost, voucherValue) {
+        if (appState.user.points < pointsCost) {
+            return showToast("Poin Anda tidak cukup untuk menukar voucher ini.");
+        }
+        
+        const confirmModal = new bootstrap.Modal(document.getElementById('redeemConfirmModal'));
+        document.getElementById('redeemConfirmBody').innerHTML = `Apakah Anda yakin ingin menukarkan <strong>${pointsCost} poin</strong> dengan voucher senilai <strong>Rp ${formatRupiah(voucherValue)}</strong>?`;
+        
+        const confirmButton = document.getElementById('confirmRedeemButton');
+        const newConfirmButton = confirmButton.cloneNode(true);
+        confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
+        
+        newConfirmButton.onclick = () => {
+            confirmRedeemPoints(pointsCost, voucherValue);
+            confirmModal.hide();
+        };
+
+        confirmModal.show();
+    }
+
+    function confirmRedeemPoints(pointsCost, voucherValue) {
+        appState.user.points -= pointsCost;
+        
+        const newVoucher = {
+            id: 'v' + Date.now(),
+            name: `Voucher Rp ${formatRupiah(voucherValue)}`,
+            value: voucherValue,
+            isUsed: false
+        };
+        appState.user.vouchers.push(newVoucher);
+        
+        saveState();
+        
+        addNotification({ text: `Selamat! Anda berhasil menukar ${pointsCost} poin dengan voucher senilai Rp${formatRupiah(voucherValue)}.` });
+        showToast("Voucher berhasil ditukarkan!");
+        
+        updateAllUI();
+        renderProfilePage();
+    }
+
+    function clearNotifications() {
+        appState.notifications = [];
+        saveState();
+        renderNotificationsPage();
+    }
+
+    function postToForum() {
+        const input = document.getElementById('forumInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appState.forumMessages.push({
+            name: appState.user.name,
+            text: text,
+            time: new Date().toISOString()
+        });
+
+        saveState();
+        renderSupportPage();
+        input.value = '';
+    }
+
+    function sendSupportTicket() {
+        const textEl = document.getElementById('supportTicketText');
+        const text = textEl.value.trim();
+        if (!text) return showToast('Pesan tidak boleh kosong.');
+
+        appState.supportTickets.push({
+            from: appState.user.name,
+            text: text,
+            time: new Date().toISOString()
+        });
+
+        saveState();
+        textEl.value = '';
+        showToast('Pertanyaan Anda telah dikirim ke admin. Terima kasih!');
+    }
+
+    function renderMerchantChat(purchaseId) {
+        const purchase = appState.purchaseHistory.find(p => p.id === purchaseId);
+        if (!purchase) return;
+
+        const chatMessagesEl = document.getElementById('chatMessages');
+        if (purchase.chatHistory.length === 0) {
+             chatMessagesEl.innerHTML = `<p class="text-muted text-center small">Mulai percakapan dengan penjual.</p>`;
+        } else {
+             chatMessagesEl.innerHTML = purchase.chatHistory.map(msg => `
+                <div class="chat-bubble ${msg.sender === 'user' ? 'user' : 'admin'}">
+                    <p class="mb-0">${msg.text}</p>
+                    <small class="text-muted d-block text-end">${new Date(msg.time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</small>
+                </div>
+            `).join('');
+        }
+        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    }
+
+    function openMerchantChat(purchaseId) {
+        const purchase = appState.purchaseHistory.find(p => p.id === purchaseId);
+        if (!purchase) return showToast('Pesanan tidak ditemukan.');
+
+        const queueModal = bootstrap.Modal.getInstance(document.getElementById('queueModal'));
+        if (queueModal) queueModal.hide();
+
+        document.getElementById('chatPurchaseId').value = purchaseId;
+        document.getElementById('merchantChatTitle').innerText = `Chat: ${purchase.restaurantName}`;
+        renderMerchantChat(purchaseId);
+        
+        const chatModal = new bootstrap.Modal(document.getElementById('merchantChatModal'));
+        chatModal.show();
+    }
+
+    function sendChatMessage() {
+        const purchaseId = document.getElementById('chatPurchaseId').value;
+        const chatInput = document.getElementById('chatInput');
+        const text = chatInput.value.trim();
+
+        if (!text) return;
+
+        const purchase = appState.purchaseHistory.find(p => p.id === purchaseId);
+        if (!purchase) return;
+
+        purchase.chatHistory.push({
+            sender: 'user',
+            text: text,
+            time: new Date().toISOString()
+        });
+
+        chatInput.value = '';
+        saveState();
+        renderMerchantChat(purchaseId);
+
+        setTimeout(() => {
+            purchase.chatHistory.push({
+                sender: 'admin',
+                text: 'Baik, kami terima pesannya. Mohon ditunggu ya kak.',
+                time: new Date().toISOString()
+            });
+            saveState();
+            const chatModalEl = document.getElementById('merchantChatModal');
+            if (chatModalEl.classList.contains('show')) {
+                renderMerchantChat(purchaseId);
+            }
+        }, 2000);
+    }
+    
+    Object.assign(window, { 
+        init, loginUser, logout, showPage, selectRestaurant, 
+        renderMenuPage, updateProfile, clearNotifications,
+        addToCart, removeFromCart, openCart, confirmPayment, verifyPinAndPay,
+        processTopup, simulateSuccessfulPayment, openReviewModal, submitReview,
+        handleSearch, showToast, showPaymentStatus, redeemPoints, confirmRedeemPoints, renderCartItems,
+        postToForum, sendSupportTicket, openMerchantChat, sendChatMessage,
+        addUpsellAndPay, proceedToPayment
+    });
+
+    window.onload = init;
+  </script>
+</body>
+</html>
+
