@@ -234,7 +234,7 @@
 <body>
 
   <!-- ===== SPLASH SCREEN ===== -->
-  <div id="splashScreen" class="d-none">
+  <div id="splashScreen">
       <!-- Menggunakan logo.png lokal -->
       <img src="logo.png" alt="Antre.in" class="splash-logo">
       <div class="splash-text">Antre.in</div>
@@ -258,7 +258,7 @@
   </div>
 
  <!-- ===== LAYAR LOGIN ===== -->
-  <div id="authScreen" class="container py-4">
+  <div id="authScreen" class="container py-4 d-none">
     <div class="row justify-content-center">
       <div class="col-12 col-md-6 col-lg-5">
         <div class="card border-0 shadow-sm" style="border-radius: var(--card-radius);">
@@ -603,28 +603,28 @@
         loadState(); // Muat data pengguna default/tersimpan
 
         // Simulasi validasi login
-        if (phone === appState.user.phone && password === appState.user.pin) {
-            saveState(); // Simpan state jika ada perubahan dari loadState (meskipun di sini tidak ada)
+       if (phone === appState.user.phone && password === appState.user.pin) {
+            saveState(); 
             localStorage.setItem('antrein-loggedin', 'true');
-            goToDashboard();
-          // LOGIKA SPLASH SCREEN
+            
+            // LOGIKA SPLASH SCREEN KEDUA (SETELAH LOGIN)
             const authScreen = document.getElementById('authScreen');
             const splashScreen = document.getElementById('splashScreen');
             
             // 1. Sembunyikan layar login
             authScreen.classList.add('d-none');
             
-            // 2. Munculkan splash screen
+            // 2. Munculkan splash screen lagi
             splashScreen.classList.remove('d-none');
             
             // 3. Tunggu 2 detik, lalu masuk dashboard
             setTimeout(() => {
-                // Efek fade out manual (opsional) atau langsung hide
+                // Efek fade out manual
                 splashScreen.style.opacity = '0';
                 
                 setTimeout(() => {
                     splashScreen.classList.add('d-none');
-                    splashScreen.style.opacity = '1'; // Reset opacity untuk login berikutnya
+                    splashScreen.style.opacity = '1'; // Reset opacity
                     goToDashboard();
                 }, 500); // Tunggu transisi opacity selesai
             }, 2000);
@@ -1420,6 +1420,7 @@
   </script>
 </body>
 </html>
+
 
 
 
