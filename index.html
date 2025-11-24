@@ -579,15 +579,24 @@
         Inisialisasi
         ------------------------------ */
     function init() {
-        notificationToast = new bootstrap.Toast(document.getElementById('notificationToast'));
-        upsellModalInstance = new bootstrap.Modal(document.getElementById('upsellModal'));
-        if (localStorage.getItem('antrein-loggedin') === 'true') {
-            loadState();
-            goToDashboard();
-        } else {
-            document.getElementById('authScreen').classList.remove('d-none');
-        }
+    notificationToast = new bootstrap.Toast(document.getElementById('notificationToast'));
+    upsellModalInstance = new bootstrap.Modal(document.getElementById('upsellModal'));
+
+    // --- HIDE SPLASH PERTAMA ---
+    const splash = document.getElementById('splashScreen');
+    setTimeout(() => {
+        splash.style.opacity = '0';
+        setTimeout(() => splash.classList.add('d-none'), 500);
+    }, 1500);
+
+    // Lanjut logika login
+    if (localStorage.getItem('antrein-loggedin') === 'true') {
+        loadState();
+        goToDashboard();
+    } else {
+        document.getElementById('authScreen').classList.remove('d-none');
     }
+}
 
     /* ------------------------------
         Otentikasi & Navigasi
@@ -1420,6 +1429,7 @@
   </script>
 </body>
 </html>
+
 
 
 
