@@ -607,6 +607,28 @@
             saveState(); // Simpan state jika ada perubahan dari loadState (meskipun di sini tidak ada)
             localStorage.setItem('antrein-loggedin', 'true');
             goToDashboard();
+          // LOGIKA SPLASH SCREEN
+            const authScreen = document.getElementById('authScreen');
+            const splashScreen = document.getElementById('splashScreen');
+            
+            // 1. Sembunyikan layar login
+            authScreen.classList.add('d-none');
+            
+            // 2. Munculkan splash screen
+            splashScreen.classList.remove('d-none');
+            
+            // 3. Tunggu 2 detik, lalu masuk dashboard
+            setTimeout(() => {
+                // Efek fade out manual (opsional) atau langsung hide
+                splashScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    splashScreen.classList.add('d-none');
+                    splashScreen.style.opacity = '1'; // Reset opacity untuk login berikutnya
+                    goToDashboard();
+                }, 500); // Tunggu transisi opacity selesai
+            }, 2000);
+          
         } else {
             showToast("Nomor telepon atau password salah.");
         }
@@ -1398,6 +1420,7 @@
   </script>
 </body>
 </html>
+
 
 
 
