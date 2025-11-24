@@ -582,14 +582,20 @@
     notificationToast = new bootstrap.Toast(document.getElementById('notificationToast'));
     upsellModalInstance = new bootstrap.Modal(document.getElementById('upsellModal'));
 
-    // --- HIDE SPLASH PERTAMA ---
+    // --- HIDE SPLASH PERTAMA TANPA MEMBUATNYA MATI ---
     const splash = document.getElementById('splashScreen');
+
+    // fade out
     setTimeout(() => {
         splash.style.opacity = '0';
-        setTimeout(() => splash.classList.add('d-none'), 500);
-    }, 1500);
+    }, 1200);
 
-    // Lanjut logika login
+    // sembunyikan tapi tetap bisa dipakai ulang (tidak pakai d-none)
+    setTimeout(() => {
+        splash.style.visibility = 'hidden';
+    }, 1700);
+
+    // login logic
     if (localStorage.getItem('antrein-loggedin') === 'true') {
         loadState();
         goToDashboard();
@@ -1429,6 +1435,7 @@
   </script>
 </body>
 </html>
+
 
 
 
