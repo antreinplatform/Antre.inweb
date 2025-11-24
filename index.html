@@ -36,7 +36,7 @@
       letter-spacing:0.2px;
     }
 
-    /* ===== SPLASH SCREEN ANIMATION ===== */
+    /* ===== SPLASH SCREEN ANIMATION (Diperbarui) ===== */
     #splashScreen {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -46,9 +46,16 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        transition: opacity 0.5s ease-in-out, visibility 0.5s;
+        opacity: 1; /* Default terlihat */
+        transition: opacity 0.5s ease-in-out;
     }
     
+    /* Class helper untuk menyembunyikan splash dengan transisi */
+    #splashScreen.hide-splash {
+        opacity: 0;
+        pointer-events: none; /* Agar tidak menghalangi klik saat transisi */
+    }
+
     .splash-logo {
         width: 150px;
         height: 150px;
@@ -596,20 +603,17 @@
 
         const splashScreen = document.getElementById('splashScreen');
         
-        // 1. JALANKAN SPLASH SCREEN PERTAMA (Saat Buka Web)
+        // 1. SPLASH SCREEN SAAT AWAL LOAD
         if (splashScreen) {
-            // Tunggu 2 detik (animasi loading), lalu hilangkan splash
+            // Tunggu 2 detik, lalu hilangkan splash
             setTimeout(() => {
-                splashScreen.style.opacity = '0'; // Fade out
+                splashScreen.classList.add('hide-splash'); // Fade out lewat CSS
                 
+                // Setelah transisi CSS selesai (500ms), baru cek login
                 setTimeout(() => {
-                    splashScreen.classList.add('d-none'); // Hilangkan layout
-                    splashScreen.style.opacity = '1'; // RESET OPACITY KE 1 (PENTING AGAR MUNCUL LAGI)
-                    splashScreen.style.visibility = ''; // RESET VISIBILITY JIKA ADA
-                    
-                    // Cek login SETELAH splash pertama selesai
+                    splashScreen.classList.add('d-none'); // Hilangkan dari layout
                     checkLoginStatus();
-                }, 500); // Waktu untuk transisi CSS opacity
+                }, 500);
             }, 2000);
         } else {
             checkLoginStatus();
@@ -635,7 +639,7 @@
 
         if (isLoggedIn) {
             loadState();
-            goToDashboard();
+            goToDashboard(false); // False artinya jangan mainkan animasi splash lagi karena ini auto-login
         } else {
             document.getElementById('authScreen').classList.remove('d-none');
         }
@@ -661,25 +665,27 @@
                 localStorage.setItem('antrein-loggedin', 'true');
             } catch(e){}
             
-            // LOGIKA SPLASH SCREEN KEDUA (SAAT LOGIN)
+            // LOGIKA SPLASH SCREEN KEDUA (SAAT KLIK LOGIN)
             const authScreen = document.getElementById('authScreen');
             const splashScreen = document.getElementById('splashScreen');
             
-            // 1. Sembunyikan layar login
+            // 1. Sembunyikan layar login agar bersih
             authScreen.classList.add('d-none');
             
-            // 2. Munculkan splash screen lagi (Pastikan style sudah bersih)
-            splashScreen.classList.remove('d-none'); 
-            splashScreen.style.opacity = '1'; // Pastikan opacity 1 agar terlihat
-            
-            // 3. Tunggu 2 detik (simulasi loading login), lalu masuk dashboard
+            // 2. Tampilkan Splash Screen
+            splashScreen.classList.remove('d-none');
+            // Sedikit delay agar browser merender penghapusan d-none sebelum menghapus class hide-splash
             setTimeout(() => {
-                splashScreen.style.opacity = '0'; // Fade out kedua
+                 splashScreen.classList.remove('hide-splash');
+            }, 10);
+            
+            // 3. Tunggu 2 detik (simulasi loading), lalu masuk dashboard
+            setTimeout(() => {
+                splashScreen.classList.add('hide-splash'); // Fade out
                 setTimeout(() => {
-                    splashScreen.classList.add('d-none'); // Sembunyikan
-                    splashScreen.style.opacity = '1'; // Reset lagi
-                    goToDashboard();
-                }, 500); 
+                    splashScreen.classList.add('d-none');
+                    goToDashboard(true);
+                }, 500); // Tunggu transisi fade out selesai
             }, 2000);
 
         } else {
@@ -687,7 +693,7 @@
         }
     }
 
-    function goToDashboard() {
+    function goToDashboard(fromLogin = false) {
         document.getElementById('authScreen').classList.add('d-none');
         document.getElementById('dashboard').classList.remove('d-none');
         updateAllUI();
